@@ -22,5 +22,9 @@ private:
     std::size_t m_currentlyAllocatedByteCount;
 };
 
+struct AllocationHeader {
+    std::size_t m_allocatedSize;
+};
+
 void* operator new(std::size_t size);
 void operator delete(void* ptr) noexcept;

@@ -3,6 +3,12 @@
 
 
 int main() {
+    {
+        int* numPtr = new int;
+        *numPtr *= 123;
+        delete numPtr;
+    }
+
     int* numPtr = new int;
     *numPtr *= 123;
     

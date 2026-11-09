@@ -6,18 +6,20 @@ void* AllocationMonitor::allocate(std::size_t size, AllocationMonitor& monitor) 
     // if the user wants an adress, he will get one. but it cannot take zero memory, this is useful for empty structs for example.
     if(size == 0) ++size;
 
-    void* memPointer = std::malloc(size);
+    void* memPointer = std::malloc(sizeof(AllocationHeader) + size);
     if(memPointer == NULL) throw std::bad_alloc{};
 
+    static_cast<AllocationHeader*>(memPointer)->m_allocatedSize = size;
     monitor.m_currentlyAllocatedByteCount += size;
 
-    return memPointer;
+    return static_cast<AllocationHeader*>(memPointer) + 1;
 }
 
 void AllocationMonitor::deallocate(void* ptr, AllocationMonitor& monitor) noexcept {
-    // monitor.m_currentlyAllocatedByteCount -= sizeof(*ptr);
-    // so uhh... thats not actaully possible since the ptr is a void ptr...
-    free(ptr);
+    AllocationHeader* header = static_cast<AllocationHeader*>(ptr) - 1; // the magic of ptr artihmetic :)
+    monitor.m_currentlyAllocatedByteCount -= header->m_allocatedSize;
+
+    free(header);
 }
 
 
