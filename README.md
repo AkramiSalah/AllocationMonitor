@@ -1,6 +1,6 @@
 # AllocationMonitor
 This project is a WOP. 
-This REASME is also a WOP.
+This README is also a WOP.
 ---
 
 right now the main feature(s) I strive to support are:
