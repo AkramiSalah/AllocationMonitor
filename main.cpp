@@ -9,8 +9,7 @@ int main() {
         delete numPtr;
     }
 
-    int* numPtr = new int;
-    *numPtr = 0xDEADBEEF;
-    
+    std::vector<int> vec(1000, 0xDEADBEEF);
+
     AllocationMonitor::getInstance().printStatus();
 }
