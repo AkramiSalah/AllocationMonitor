@@ -5,12 +5,12 @@
 int main() {
     {
         int* numPtr = new int;
-        *numPtr *= 123;
+        *numPtr = 0xDEADBEEF;
         delete numPtr;
     }
 
     int* numPtr = new int;
-    *numPtr *= 123;
+    *numPtr = 0xDEADBEEF;
     
     AllocationMonitor::getInstance().printStatus();
 }
