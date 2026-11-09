@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdlib>
+#include "Timer.hpp"
 
 // Note that this is a singelton!
 class AllocationMonitor {
@@ -24,6 +25,10 @@ private:
 
 struct AllocationHeader {
     std::size_t m_allocatedSize;
+    Timer m_timer;
+
+    explicit AllocationHeader(const std::size_t allocatedSize) :
+        m_allocatedSize(allocatedSize), m_timer(Timer()) {};
 };
 
 void* operator new(std::size_t size);

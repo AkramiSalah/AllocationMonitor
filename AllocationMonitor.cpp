@@ -1,23 +1,26 @@
 #include "AllocationMonitor.hpp"
 #include <new>
 #include <iostream>
+#include <cstring>
 
 void* AllocationMonitor::allocate(std::size_t size, AllocationMonitor& monitor) {
-    // if the user wants an adress, he will get one. but it cannot take zero memory, this is useful for empty structs for example.
-    if(size == 0) ++size;
-
     void* memPointer = std::malloc(sizeof(AllocationHeader) + size);
     if(memPointer == NULL) throw std::bad_alloc{};
+    
+    AllocationHeader header{size};
+    std::memcpy(memPointer, &header, sizeof(header));
 
-    static_cast<AllocationHeader*>(memPointer)->m_allocatedSize = size;
     monitor.m_currentlyAllocatedByteCount += size;
 
-    return static_cast<AllocationHeader*>(memPointer) + 1;
+    return static_cast<char*>(memPointer) + sizeof(AllocationHeader);
 }
 
 void AllocationMonitor::deallocate(void* ptr, AllocationMonitor& monitor) noexcept {
     AllocationHeader* header = static_cast<AllocationHeader*>(ptr) - 1; // the magic of ptr artihmetic :)
     monitor.m_currentlyAllocatedByteCount -= header->m_allocatedSize;
+
+    // just for testing right now, DELETE THIS LATER!
+    std::cout << header->m_timer.elapsedMs() << " have elapsed since allocating this\n";
 
     free(header);
 }
@@ -34,5 +37,9 @@ void* operator new(std::size_t size) {
 
 
 void operator delete(void* ptr) noexcept{
+    AllocationMonitor::getInstance().deallocate(ptr);
+}
+
+void operator delete(void* ptr, std::size_t) noexcept {
     AllocationMonitor::getInstance().deallocate(ptr);
 }
