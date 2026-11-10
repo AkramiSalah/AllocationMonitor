@@ -2,27 +2,37 @@
 #include <new>
 #include <iostream>
 #include <cstring>
+#include <cstddef>
 
-void* AllocationMonitor::allocate(std::size_t size, AllocationMonitor& monitor) {
-    void* memPointer = std::malloc(sizeof(AllocationHeader) + size);
+void* AllocationMonitor::allocate(std::size_t size, std::size_t al) {
+    if(al < alignof(std::max_align_t)) al = alignof(std::max_align_t); // otherwise alligned alloc fails
+    
+    std::size_t alignedHeaderSize = alignedSize(sizeof(AllocationHeader), al);
+    std::size_t alignedUserDataSize = alignedSize(size, al);
+    
+    void* memPointer = std::aligned_alloc( al, alignedHeaderSize + alignedUserDataSize );
     if(memPointer == NULL) throw std::bad_alloc{};
     
-    AllocationHeader header{size};
-    std::memcpy(memPointer, &header, sizeof(header));
+    char* headerAddress = static_cast<char*>(memPointer) + alignedHeaderSize - sizeof(AllocationHeader);
 
-    monitor.m_currentlyAllocatedByteCount += size;
+    AllocationHeader header{size, memPointer};
+    std::memcpy(headerAddress, &header, sizeof(header));
 
-    return static_cast<char*>(memPointer) + sizeof(AllocationHeader);
+    this->m_currentlyAllocatedByteCount += size;
+
+    char* userDataAdress = headerAddress + sizeof(AllocationHeader);
+    return userDataAdress;
 }
 
-void AllocationMonitor::deallocate(void* ptr, AllocationMonitor& monitor) noexcept {
-    AllocationHeader* header = static_cast<AllocationHeader*>(ptr) - 1; // the magic of ptr artihmetic :)
-    monitor.m_currentlyAllocatedByteCount -= header->m_allocatedSize;
+void AllocationMonitor::deallocate(void* ptr) noexcept {
+    if(!ptr) return;
+    AllocationHeader* headerPtr = reinterpret_cast<AllocationHeader*>(static_cast<char*>(ptr) - sizeof(AllocationHeader)); 
+    this->m_currentlyAllocatedByteCount -= headerPtr->m_allocatedSize;
 
     // just for testing right now, DELETE THIS LATER!
-    std::cout << header->m_timer.elapsedMs() << " have elapsed since allocating this\n";
+    std::cout << headerPtr->m_timer.elapsedMs() << " have elapsed since allocating this\n";
 
-    free(header);
+    free(headerPtr->m_allocatedBufferAddress);
 }
 
 

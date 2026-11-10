@@ -7,8 +7,9 @@ class AllocationMonitor {
 public:
     void printStatus();
 
-    void* allocate(std::size_t size, AllocationMonitor& monitor = AllocationMonitor::getInstance());
-    void deallocate(void* ptr, AllocationMonitor& monitor = AllocationMonitor::getInstance()) noexcept;
+    void* allocate(std::size_t size, std::size_t al = __STDCPP_DEFAULT_NEW_ALIGNMENT__);
+
+    void deallocate(void* ptr) noexcept;
 
     static AllocationMonitor& getInstance() {
         static AllocationMonitor instance;
@@ -20,24 +21,20 @@ public:
 
 private:
     AllocationMonitor() = default;
-    std::size_t m_currentlyAllocatedByteCount;
+    std::size_t m_currentlyAllocatedByteCount; // currently allocated BY USER! the bookkeeping overhead does not count!
 };
 
 struct AllocationHeader {
     std::size_t m_allocatedSize;
     Timer m_timer;
+    void* m_allocatedBufferAddress;
 
-    explicit AllocationHeader(const std::size_t allocatedSize) :
-        m_allocatedSize(allocatedSize), m_timer(Timer()) {};
+    AllocationHeader(const std::size_t userDataSize, void* allocatedBufferAddress) :
+        m_allocatedSize(userDataSize + sizeof(AllocationHeader)),
+        m_timer(Timer()),
+        m_allocatedBufferAddress(allocatedBufferAddress){};
 };
 
-////////// TODO : literally make all of these :(((((
-
-// cppref's new, delete pages have a list that says what the default behaviour is so lets see if it works for me.. 
-
-// news
-
-void* operator new  ( std::size_t size ); // done :)
 
 // void* operator new[]( std::size_t size );
 
