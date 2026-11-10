@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdlib>
 #include "Timer.hpp"
+#include "Utilities.hpp"
 
 // Note that this is a singelton!
 class AllocationMonitor {
@@ -36,46 +37,70 @@ struct AllocationHeader {
 };
 
 
-// void* operator new[]( std::size_t size );
+// new operators
 
-// void* operator new  ( std::size_t size, std::align_val_t al );
+// 1)
+void* operator new( std::size_t size );
 
-// void* operator new[]( std::size_t size, std::align_val_t al );
+// 2)
+void* operator new[]( std::size_t size );
+
+// 3)
+void* operator new  ( std::size_t size, std::align_val_t al );
+
+// 4)
+void* operator new[]( std::size_t size, std::align_val_t al );
 
 //Replaceable non-throwing allocation functions
-// void* operator new  ( std::size_t size, const std::nothrow_t& tag );
 
-// void* operator new[]( std::size_t size, const std::nothrow_t& tag );
+// 5)
+void* operator new  ( std::size_t size, const std::nothrow_t& tag ) noexcept;
 
-// void* operator new  ( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
+// 6)
+void* operator new[]( std::size_t size, const std::nothrow_t& tag ) noexcept;
 
-// void* operator new[]( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
+// 7)
+void* operator new  ( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
 
-// deletes
+// 8)
+void* operator new[]( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
 
+// delete operators
 
-void operator delete  ( void* ptr ) noexcept; // done :)
+// 1)
+void operator delete  ( void* ptr ) noexcept;
 
-// void operator delete[]( void* ptr ) noexcept;
+// 2)
+void operator delete[]( void* ptr ) noexcept;
 
-// void operator delete  ( void* ptr, std::align_val_t al ) noexcept;
+// 3)
+void operator delete  ( void* ptr, std::align_val_t al ) noexcept;
 
-// void operator delete[]( void* ptr, std::align_val_t al ) noexcept;
+// 4)
+void operator delete[]( void* ptr, std::align_val_t al ) noexcept;
 
-void operator delete  ( void* ptr, std::size_t sz ) noexcept; // done :)
+// 5)
+void operator delete  ( void* ptr, std::size_t size ) noexcept;
 
-// void operator delete[]( void* ptr, std::size_t sz ) noexcept;
+// 6)
+void operator delete[]( void* ptr, std::size_t size ) noexcept;
 
-// void operator delete  ( void* ptr, std::size_t sz, std::align_val_t al ) noexcept;
+// 7)
+void operator delete  ( void* ptr, std::size_t size, std::align_val_t al ) noexcept;
 
-// void operator delete[]( void* ptr, std::size_t sz, std::align_val_t al ) noexcept;
+// 8)
+void operator delete[]( void* ptr, std::size_t size, std::align_val_t al ) noexcept;
 
 // Replaceable placement deallocation functions
 
-// void operator delete  ( void* ptr, const std::nothrow_t& tag ) noexcept;
+// 9)
+void operator delete  ( void* ptr, const std::nothrow_t& tag ) noexcept;
 
-// void operator delete[]( void* ptr, const std::nothrow_t& tag ) noexcept;
+// 10)
+void operator delete[]( void* ptr, const std::nothrow_t& tag ) noexcept;
 
-//void operator delete  ( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
+// 11)
+void operator delete  ( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
 
-//void operator delete[]( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept;
+// 12)
+void operator delete[]( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept;

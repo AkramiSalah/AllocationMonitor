@@ -45,11 +45,92 @@ void* operator new(std::size_t size) {
     return AllocationMonitor::getInstance().allocate(size);
 }
 
+void* operator new[](std::size_t size) {
+    return operator new(size);
+}
+
+void* operator new( std::size_t size, std::align_val_t al ){
+    return AllocationMonitor::getInstance().allocate(size, static_cast<std::size_t>(al));
+}
+
+void* operator new[]( std::size_t size, std::align_val_t al ){
+    return operator new (size, al);
+}
+
+//Replaceable non-throwing allocation functions
+void* operator new( std::size_t size, const std::nothrow_t& tag ) noexcept{
+    try {
+        return operator new(size);
+    }
+    catch(...) {
+        return nullptr;
+    }
+}
+
+void* operator new[]( std::size_t size, const std::nothrow_t& tag ) noexcept{
+    return operator new(size, tag);
+}
+
+void* operator new( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+    try {
+        return operator new(size, al);
+    }
+    catch(...) {
+        return nullptr;
+    }
+}
+
+void* operator new[]( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+    return operator new(size, al, tag);
+}
+
 
 void operator delete(void* ptr) noexcept{
     AllocationMonitor::getInstance().deallocate(ptr);
 }
 
+void operator delete[]( void* ptr ) noexcept{
+    operator delete(ptr);
+}
+
+void operator delete  ( void* ptr, std::align_val_t al ) noexcept{
+    operator delete(ptr);
+}
+
+void operator delete[]( void* ptr, std::align_val_t al ) noexcept{
+    operator delete(ptr, al);
+}
+
 void operator delete(void* ptr, std::size_t) noexcept {
-    AllocationMonitor::getInstance().deallocate(ptr);
+    operator delete(ptr);
+} 
+
+void operator delete[]( void* ptr, std::size_t size ) noexcept{
+    operator delete[](ptr);
+}
+
+void operator delete  ( void* ptr, std::size_t size, std::align_val_t al ) noexcept{
+    operator delete(ptr, al);
+}
+
+void operator delete[]( void* ptr, std::size_t size, std::align_val_t al ) noexcept{
+    operator delete[](ptr, al);
+}
+
+// Replaceable placement deallocation functions
+
+void operator delete  ( void* ptr, const std::nothrow_t& tag ) noexcept{
+    operator delete(ptr);
+}
+
+void operator delete[]( void* ptr, const std::nothrow_t& tag ) noexcept{
+    operator delete[](ptr);
+}
+
+void operator delete  ( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+    operator delete(ptr, al);
+}
+
+void operator delete[]( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+    operator delete[](ptr, al);
 }
