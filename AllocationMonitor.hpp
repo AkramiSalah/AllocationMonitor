@@ -31,7 +31,7 @@ struct AllocationHeader {
     void* m_allocatedBufferAddress;
 
     AllocationHeader(const std::size_t userDataSize, void* allocatedBufferAddress) :
-        m_allocatedSize(userDataSize + sizeof(AllocationHeader)),
+        m_allocatedSize(userDataSize),
         m_timer(Timer()),
         m_allocatedBufferAddress(allocatedBufferAddress){};
 };
