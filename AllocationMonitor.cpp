@@ -59,7 +59,7 @@ void* operator new[]( std::size_t size, std::align_val_t al ){
 }
 
 //Replaceable non-throwing allocation functions
-void* operator new( std::size_t size, const std::nothrow_t& tag ) noexcept{
+void* operator new( std::size_t size, const std::nothrow_t& ) noexcept{
     try {
         return operator new(size);
     }
@@ -68,11 +68,11 @@ void* operator new( std::size_t size, const std::nothrow_t& tag ) noexcept{
     }
 }
 
-void* operator new[]( std::size_t size, const std::nothrow_t& tag ) noexcept{
+void* operator new[]( std::size_t size, const std::nothrow_t& tag) noexcept{
     return operator new(size, tag);
 }
 
-void* operator new( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+void* operator new( std::size_t size, std::align_val_t al, const std::nothrow_t& ) noexcept{
     try {
         return operator new(size, al);
     }
@@ -81,7 +81,7 @@ void* operator new( std::size_t size, std::align_val_t al, const std::nothrow_t&
     }
 }
 
-void* operator new[]( std::size_t size, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+void* operator new[]( std::size_t size, std::align_val_t al, const std::nothrow_t& tag) noexcept{
     return operator new(size, al, tag);
 }
 
@@ -94,7 +94,7 @@ void operator delete[]( void* ptr ) noexcept{
     operator delete(ptr);
 }
 
-void operator delete  ( void* ptr, std::align_val_t al ) noexcept{
+void operator delete  ( void* ptr, std::align_val_t) noexcept{
     operator delete(ptr);
 }
 
@@ -106,32 +106,32 @@ void operator delete(void* ptr, std::size_t) noexcept {
     operator delete(ptr);
 } 
 
-void operator delete[]( void* ptr, std::size_t size ) noexcept{
+void operator delete[]( void* ptr, std::size_t ) noexcept{
     operator delete[](ptr);
 }
 
-void operator delete  ( void* ptr, std::size_t size, std::align_val_t al ) noexcept{
+void operator delete  ( void* ptr, std::size_t, std::align_val_t al ) noexcept{
     operator delete(ptr, al);
 }
 
-void operator delete[]( void* ptr, std::size_t size, std::align_val_t al ) noexcept{
+void operator delete[]( void* ptr, std::size_t, std::align_val_t al ) noexcept{
     operator delete[](ptr, al);
 }
 
 // Replaceable placement deallocation functions
 
-void operator delete  ( void* ptr, const std::nothrow_t& tag ) noexcept{
+void operator delete  ( void* ptr, const std::nothrow_t& ) noexcept{
     operator delete(ptr);
 }
 
-void operator delete[]( void* ptr, const std::nothrow_t& tag ) noexcept{
+void operator delete[]( void* ptr, const std::nothrow_t& ) noexcept{
     operator delete[](ptr);
 }
 
-void operator delete  ( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+void operator delete  ( void* ptr, std::align_val_t al, const std::nothrow_t& ) noexcept{
     operator delete(ptr, al);
 }
 
-void operator delete[]( void* ptr, std::align_val_t al, const std::nothrow_t& tag ) noexcept{
+void operator delete[]( void* ptr, std::align_val_t al, const std::nothrow_t& ) noexcept{
     operator delete[](ptr, al);
 }
