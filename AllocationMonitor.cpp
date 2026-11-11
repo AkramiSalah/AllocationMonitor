@@ -1,8 +1,9 @@
-#include "AllocationMonitor.hpp"
 #include <new>
 #include <iostream>
 #include <cstring>
 #include <cstddef>
+#include "AllocationMonitor.hpp"
+#include "Utilities.hpp"
 
 void* AllocationMonitor::allocate(std::size_t size, std::size_t al) {
     if(al < alignof(std::max_align_t)) al = alignof(std::max_align_t); // otherwise alligned alloc fails

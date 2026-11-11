@@ -1,7 +1,6 @@
 #pragma once
 #include <cstdlib>
 #include "Timer.hpp"
-#include "Utilities.hpp"
 
 // Note that this is a singelton!
 class AllocationMonitor {
