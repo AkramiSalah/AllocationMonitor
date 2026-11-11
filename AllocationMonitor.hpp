@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdlib>
+#include <atomic>
 #include "Timer.hpp"
 
 // Note that this is a singelton!
@@ -21,7 +22,7 @@ public:
 
 private:
     AllocationMonitor() = default;
-    std::size_t m_currentlyAllocatedByteCount; // currently allocated BY USER! the bookkeeping overhead does not count!
+    std::atomic<std::size_t> m_currentlyAllocatedByteCount; // currently allocated BY USER! the bookkeeping overhead does not count!
 };
 
 struct AllocationHeader {
